@@ -1,0 +1,11 @@
+# Ignore terraform files with the variable and the state terraform files
+variable.tf
+terraform.tfstate
+terraform.tfstate.backup
+.terraform.lock.hcl
+
+# Ignore module terraforms
+.terraform
+
+# Ignore cache ansible
+.ansible

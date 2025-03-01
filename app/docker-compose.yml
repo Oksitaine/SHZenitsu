@@ -1,0 +1,13 @@
+services:
+  nginx:
+    image: 'docker.io/jc21/nginx-proxy-manager:2.12.3'
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    environment:
+      INITIAL_ADMIN_USERNAME: demonslayer
+      INITIAL_ADMIN_PASSWORD: password
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt

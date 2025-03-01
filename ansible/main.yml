@@ -1,0 +1,45 @@
+# ansible-lint disable
+# code: language=ansible
+- name: "VM"
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no' # Disable the strict host key checking for the ssh connection
+  hosts: all
+  become: true
+  become_method: ansible.builtin.sudo
+  pre_tasks:
+    - name: Update APT cache
+      ansible.builtin.apt:
+        update_cache: true
+
+  tasks:
+    #########################
+    # INSTALL DOCKER
+    #########################
+    - include_tasks: docker.yml
+
+    #########################
+    # INSTALL NGINX PROXY MANAGER
+    # All the tasks for install is in the docker-compose.yml file
+    #########################
+
+
+    #########################
+    # START DOCKER COMPOSE
+    #########################
+    - name: Copy docker-compose.yml to the VM
+      ansible.builtin.copy:
+        src: ../app/docker-compose.yml
+        dest: /home/ubuntu/docker-compose.yml
+        mode: '0600'
+        owner: ubuntu
+        group: ubuntu
+
+    - name: Pull the images
+      ansible.builtin.command: docker compose pull
+      args:
+        chdir: /home/ubuntu
+
+    - name: Start docker compose
+      ansible.builtin.command: docker compose up -d
+      args:
+        chdir: /home/ubuntu
